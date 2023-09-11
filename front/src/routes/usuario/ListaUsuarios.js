@@ -1,10 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AgregarUsuario from "./AgregarUsuario.js";
 import EditarUsuario from "./EditarUsuario.js";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 import { FaUserXmark } from "react-icons/fa6";
 import NavBar from '../../componentes/NavBar.js';
@@ -44,7 +45,7 @@ export default function Usuario() {
                         title: 'Borrado',
                         showConfirmButton: false,
                         timer: 1200
-                      })
+                    })
                     setUsuarios(usuarios.filter(usuario => usuario.id !== id));
                 } catch (error) {
                     console.error(error.message);
@@ -62,7 +63,9 @@ export default function Usuario() {
             <NavBar /><br />
             <div className="container">
                 <div className="d-flex">
-                    <AgregarUsuario />&nbsp;
+                    <AgregarUsuario
+                        listaUsuarios={listaUsuarios}
+                    />&nbsp;
                     <h1>
                         Usuarios
                     </h1>
@@ -87,10 +90,13 @@ export default function Usuario() {
                                     <h5><span class="badge rounded-pill text-bg-success">Si</span></h5>
                                     :
                                     <h5><span class="badge rounded-pill text-bg-danger">No</span></h5>
-                                    }
+                                }
                                 </td>
                                 <td>
-                                    <EditarUsuario usuario={usuario} />&nbsp;
+                                    <EditarUsuario
+                                        usuario={usuario}
+                                        listaUsuarios={listaUsuarios}
+                                    />&nbsp;
                                     <button title="Borrar" className="btn btn-outline-danger" onClick={() => borrarUsuario(usuario.id)}><FaUserXmark /></button>
                                 </td>
                             </tr>

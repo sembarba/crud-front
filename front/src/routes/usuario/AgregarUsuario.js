@@ -3,8 +3,10 @@ import axios from "axios";
 
 import { FaUserPlus } from "react-icons/fa6";
 
-export default function AgrearUsuario() {
-    const [datos, setDatos] = useState({
+import Swal from 'sweetalert2';
+
+export default function AgrearUsuario({ listaUsuarios }) {
+const [datos, setDatos] = useState({
         nombre: '',
         email: '',
         password: '',
@@ -20,7 +22,14 @@ export default function AgrearUsuario() {
             const response = await axios.post('http://localhost:5000/api/saveUsuario', datos);
 
             if (response.status === 200) {
-                window.location = '/usuario';
+                listaUsuarios();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Grabado',
+                    showConfirmButton: false,
+                    timer: 1200
+                });
+                document.getElementById("clicCerrarModal").click();
             } else {
                 setMensajeError('Ya existe un usuario con ese email');
                 return;
@@ -55,7 +64,7 @@ export default function AgrearUsuario() {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Nuevo usuario</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={clearDatos}></button>
+                            <button type="button" id="clicCerrarModal" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={clearDatos}></button>
                         </div>
                         <div class="modal-body">
                             <form onSubmit={agregarUsuarios}>

@@ -5,11 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { FaUserPen } from "react-icons/fa6";
 
-import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
-export default function EditarUsuario({ usuario }) {
-    const navigate = useNavigate();
-    
+export default function EditarUsuario({ usuario, listaUsuarios }) {
     const [datos, setDatos] = useState({
         id: usuario.id,
         nombre: usuario.nombre,
@@ -18,18 +16,23 @@ export default function EditarUsuario({ usuario }) {
         activo: usuario.activo,
         // roles: usuario.roles
     });
-    
+
     const [mensajeError, setMensajeError] = useState(null);
-    
+
     const editarUsuarios = async e => {
         e.preventDefault();
         try {
             const response = await axios.put('http://localhost:5000/api/updateUsuario/' + datos.id, datos);
-            
+
             if (response.status === 200) {
-                // window.location = '/usuario';
-                console.log('ENTRE');
-                navigate('/usuario');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Editado',
+                    showConfirmButton: false,
+                    timer: 1200
+                });
+                document.getElementById(`modalId${datos.id}`).click();
+                listaUsuarios();
             } else {
                 setMensajeError('Ya existe un usuario con ese email');
                 return;
@@ -38,9 +41,19 @@ export default function EditarUsuario({ usuario }) {
             console.error(error.message);
         }
     };
-    
+
     const manejarDatos = e => {
         setDatos({ ...datos, [e.target.name]: e.target.value });
+    };
+
+    const clearDatos = () => {
+        setDatos({
+            id: usuario.id,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            password: usuario.password,
+            activo: usuario.activo,
+        });
     };
 
     return (
@@ -52,8 +65,8 @@ export default function EditarUsuario({ usuario }) {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="exampleModalLabel">Nuevo usuario</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Editar usuario</h1>
+                            <button type="button" id={`modalId${datos.id}`} className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={clearDatos}></button>
                         </div>
                         <div class="modal-body">
                             <form onSubmit={editarUsuarios}>
